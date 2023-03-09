@@ -1,0 +1,22 @@
+name: deploy-to-server
+run-name: ${{ github.actor }} is deploying to server 🤓
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    name: Executes pull on remote
+    runs-on: ubuntu-latest
+    environment: real-production
+    steps:
+      - name: 🔐 Installing ssh keys ...
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DC_HOST }} > ~/.ssh/known_hosts
+      - name: ⏬ Connecting and Pulling ...
+        run: ssh ${{ secrets.DC_USER }}@${{ secrets.DC_HOST }} "cd ${{ secrets.DIR }} && git checkout . && git checkout --force main && git pull origin main && exit"
+      - name: 🧽 Cleaning ...
+        run: rm -rf ~/.ssh
