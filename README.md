@@ -98,10 +98,12 @@ After=network.target
 [Service]
 Type=simple
 User=your_user
-WorkingDirectory=/path/to/your/project
-EnvironmentFile=/path/to/your/project/.env
-ExecStart=/path/to/your/project/venv/bin/celery -A app.celery worker --concurrency=1 --loglevel=info --hostname=worker-%i@%%h -Q queue-%i
+Group=your_group
+WorkingDirectory=/var/www/service
+Environment="PATH=/var/www/service/venv/bin"
+ExecStart=/var/www/service/venv/bin/celery -A app.celery worker --concurrency=1 --loglevel=info --hostname=worker-%i@%%h -Q queue-%i,sum_queue,divide_queue -E
 Restart=always
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
