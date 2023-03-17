@@ -101,7 +101,7 @@ User=your_user
 Group=your_group
 WorkingDirectory=/var/www/service
 Environment="PATH=/var/www/service/venv/bin"
-ExecStart=/var/www/service/venv/bin/celery -A app.celery worker --concurrency=1 --loglevel=info --hostname=worker-%i@%%h -Q queue-%i,sum_queue,divide_queue -E
+ExecStart=/var/www/service/venv/bin/celery -A app.celery worker --concurrency=1 --loglevel=info --hostname=worker-%i@%%h -Q queue-%i,sum_queue,divide_queue -E --logfile=/var/log/celery/worker-%i.log
 Restart=always
 RestartSec=10s
 
