@@ -4,14 +4,6 @@ from app.tasks.sum_task import sum_task
 
 app = FastAPI()
 
-
-# celery = Celery(
-#     __name__,
-#     broker="redis://127.0.0.1:6379/0",
-#     backend="redis://127.0.0.1:6379/0"
-# )
-
-
 @app.get("/")
 async def root():
     return {"message": "Welcome -Elad Technologies- API ready to use."}
