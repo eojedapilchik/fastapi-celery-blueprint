@@ -123,6 +123,34 @@ sudo systemctl enable celery@3
 sudo systemctl status celery@1
 
 ```  
+6. Create flower systemd service:  
+`sudo nano /etc/systemd/system/flower.service
+   `
+```
+[Unit]
+Description=Flower Celery Monitoring Tool
+After=network.target
+
+[Service]
+Type=simple
+User=your_user
+Group=your_group
+WorkingDirectory=/var/www/service
+Environment="PATH=/var/www/service/venv/bin"
+ExecStart=/var/www/service/venv/bin/celery -A app.celery flower --broker=redis://127.0.0.1:6379/0 --port=5555
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
+```  
+```
+sudo systemctl daemon-reload
+sudo systemctl start flower.service
+sudo systemctl enable flower.service
+sudo systemctl status flower.service
+```
+
 ## Commands:  
 * launch flower dashboard: `celery -A main.celery flower --address=0.0.0.0 --port=5555 -l INFO`  or use one of the tasks: 
 `celery -A app.tasks.divide_task flower --address=0.0.0.0 --port=5555 -l INFO` or `celery -A app.celery flower` for the general worker
