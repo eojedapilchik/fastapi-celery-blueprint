@@ -17,20 +17,15 @@ async def root():
     return {"message": "Welcome -Elad Technologies- API ready to use."}
 
 
-# @celery.task
-# def divide(x, y):
-#     import time
-#     time.sleep(5)
-#     return x / y
-
-
 @app.post("/divide/")
-async def divide(a: float, b: float, background_tasks: BackgroundTasks):
-    background_tasks.add_task(divide_task, a, b)
-    return {"message": "Task scheduled"}
+async def divide(a: float, b: float):
+    task = divide_task.delay(a, b)
+    task_id = task.id
+    return {"message": "Divide task is being processed in the background", "task_id": task_id}
 
 
 @app.post("/suma/")
-async def suma(a: float, b: float, background_tasks: BackgroundTasks):
-    background_tasks.add_task(sum_task, a, b)
-    return {"message": "Task scheduled"}
+async def suma(a: float, b: float):
+    task = sum_task.delay(a, b)
+    task_id = task.id
+    return {"message": "Sum task is being processed in the background", "task_id": task_id}
