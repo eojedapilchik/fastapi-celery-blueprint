@@ -4,7 +4,9 @@ accept_content = ["application/json"]
 task_serializer = "json"
 result_serializer = "json"
 enable_utc = True
-# task_routes = {
-#     'app.tasks.divide_task.divide_task': {'queue': 'divide_task'},
-#     'app.tasks.sum_task.sum_task': {'queue': 'sum_task'},
-# }
+worker_send_task_events = True
+# Add the task routes
+task_routes = {
+    "app.tasks.sum_task.sum_task": {"queue": "sum_queue"},
+    "app.tasks.divide_task.divide_task": {"queue": "divide_queue"},
+}
