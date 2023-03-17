@@ -33,6 +33,7 @@
 * launch celery task1 worker: `celery -A app.tasks.divide_task worker -l info -n divide_worker@%h -Q divide_queue -E` 
 * launch celery task2 worker: `celery -A app.tasks.sum_task worker -l info -n sum_worker@%h -Q sum_queue -E`
 * launch celery worker for both tasks: `celery -A app.tasks.divide_task worker -l info -E -n worker1 -Q sum_queue,divide_queue`
+* launch general worker: `celery -A app.celery worker --concurrency=1 --loglevel=info -Q sum_queue,divide_queue -E`
 * Launch celery events: `celery -A app.tasks.divide_task events`  use any of the two tasks. This command starts the events viewer and monitors events related to both the sum_task and divide_task. As tasks are received, started, and completed, the events viewer will display information about them.
 
 Other links:
