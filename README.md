@@ -25,8 +25,102 @@
 1. Install Flower:  
 `pip install flower`
 
+### Nginx and SSL
 
+1. Install Nginx:
+```
+sudo apt update  
+sudo apt upgrade  
+sudo apt install nginx
+```
 
+2. Install certbot:
+```
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo apt install certbot python3-certbot-nginx
+sudo certbot certonly --nginx -d your_domain_or_ip
+```
+
+3. Configure Nginx:  
+`sudo nano /etc/nginx/sites-available/default`  
+```
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+    server_name your_domain_or_ip;
+    ssl_certificate /etc/letsencrypt/live/your_domain_or_ip/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your_domain_or_ip/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+
+    location / {
+        proxy_pass http://0.0.0.0:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+`sudo systemctl restart nginx
+`  
+
+4. firewall:  
+`sudo ufw allow https`     
+
+5. Create worker systemd service:  
+```
+[Unit]
+Description=Gunicorn instance to serve FastAPI app
+After=network.target
+
+[Service]
+User=your_user
+Group=your_group
+WorkingDirectory=/path/to/your/fastapi/project
+Environment="PATH=/path/to/your/fastapi/project/venv/bin"
+ExecStart=/path/to/your/fastapi/project/venv/bin/gunicorn -k uvicorn.workers.UvicornWorker -w 4 -b 0.0.0.0:8000 main:app
+
+[Install]
+WantedBy=multi-user.target
+
+```
+`sudo nano /etc/systemd/system/celery@.service
+   `
+```
+[Unit]
+Description=Celery Worker %I
+After=network.target
+
+[Service]
+Type=simple
+User=your_user
+WorkingDirectory=/path/to/your/project
+EnvironmentFile=/path/to/your/project/.env
+ExecStart=/path/to/your/project/venv/bin/celery -A app.celery worker --concurrency=1 --loglevel=info --hostname=worker-%i@%%h -Q queue-%i
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```  
+```
+sudo systemctl daemon-reload
+
+sudo systemctl start celery@1
+sudo systemctl enable celery@1
+
+sudo systemctl start celery@2
+sudo systemctl enable celery@2
+
+sudo systemctl start celery@3
+sudo systemctl enable celery@3
+
+sudo systemctl status celery@1
+
+```  
 ## Commands:  
 * launch flower dashboard: `celery -A main.celery flower --address=0.0.0.0 --port=5555 -l INFO`  or use one of the tasks: 
 `celery -A app.tasks.divide_task flower --address=0.0.0.0 --port=5555 -l INFO` or `celery -A app.celery flower` for the general worker

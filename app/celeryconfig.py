@@ -5,6 +5,7 @@ task_serializer = "json"
 result_serializer = "json"
 enable_utc = True
 worker_send_task_events = True
+task_create_missing_queues = True
 # Add the task routes
 task_routes = {
     "app.tasks.sum_task.sum_task": {"queue": "sum_queue"},
