@@ -17,6 +17,6 @@ jobs:
           echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.HOST }} > ~/.ssh/known_hosts
       - name: ⏬ Connecting and Pulling ...
-        run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd ${{ secrets.DIR }} && git checkout . && git checkout --force main && git pull origin main && pip install -r requirements.txt && systemctl restart gunicorn.service flower.service celery@1.service && exit"
+        run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd ${{ secrets.DIR }} && git checkout . && git checkout --force main && git pull origin main && source venv/bin/activate && pip install -r requirements.txt && systemctl restart gunicorn.service flower.service celery@1.service && exit"
       - name: 🧽 Cleaning ...
         run: rm -rf ~/.ssh
