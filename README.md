@@ -1,4 +1,4 @@
-# adedayo-lotto-service
+# FastAPI Celery Redis Blueprint Project
 
 ## Installation
 
@@ -29,7 +29,7 @@
 
 ## Commands:  
 * launch flower dashboard: `celery -A main.celery flower --address=0.0.0.0 --port=5555 -l INFO`  or use one of the tasks: 
-`celery -A app.tasks.divide_task flower --address=0.0.0.0 --port=5555 -l INFO`
+`celery -A app.tasks.divide_task flower --address=0.0.0.0 --port=5555 -l INFO` or `celery -A app.celery flower` for the general worker
 * launch celery task1 worker: `celery -A app.tasks.divide_task worker -l info -n divide_worker@%h -Q divide_queue -E` 
 * launch celery task2 worker: `celery -A app.tasks.sum_task worker -l info -n sum_worker@%h -Q sum_queue -E`
 * launch celery worker for both tasks: `celery -A app.tasks.divide_task worker -l info -E -n worker1 -Q sum_queue,divide_queue`
