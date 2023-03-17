@@ -1,10 +1,8 @@
 # app/tasks/divide_task.py
 import time
-from celery import Celery
+from app.celery import celery_app
 from logging_config import get_logger
 
-celery_app = Celery("divide_task")
-celery_app.config_from_object("app.celeryconfig")
 logger = get_logger()
 
 

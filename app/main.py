@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from app.tasks.divide_task import divide_task
-from app.tasks.sum_task import sum_task
+from .tasks import divide_task, sum_task
 
 app = FastAPI()
 
