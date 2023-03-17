@@ -162,3 +162,11 @@ sudo systemctl status flower.service
 
 Other links:
 * Documentation about monitoring: https://docs.celeryq.dev/en/stable/userguide/monitoring.html
+
+
+## local Commands:
+`celery -A app.celery worker -l info -n worker@%h -Q sum_queue,divide_queue -E`  
+`celery -A app.celery flower`  
+`celery -A app.celery events`  
+`uvicorn main:app --reload --port 8000 --host`  
+

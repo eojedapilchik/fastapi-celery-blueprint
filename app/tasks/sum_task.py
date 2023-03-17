@@ -7,6 +7,7 @@ celery_app = Celery("sum_task")
 celery_app.config_from_object("app.celeryconfig")
 logger = get_logger()
 
+
 @celery_app.task
 def sum_task(a: float, b: float):
     result = a + b
